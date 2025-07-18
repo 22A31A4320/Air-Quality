@@ -1,0 +1,43 @@
+# Install dependencies
+!pip install streamlit PyMuPDF scikit-learn -q
+!npm install -g localtunnel
+!pip install streamlit -q
+!npm install -g localtunnel
+!wget -q -O - ipv4.icanhazip.com
+! streamlit run app.py & npx localtunnel --port 8501 
+
+app.py code 
+
+import requests
+import json
+import streamlit as st
+st.title("air pollution")
+apikey="7040ea904442a45d6950ba584410ce59"
+a="http://api.openweathermap.org/data/2.5/air_pollution?lat="
+b=st.number_input("enter the lalitude:")
+c=st.number_input("enter the logitude:")
+b=str(b)
+c=str(c)
+completeURL=a+b+"&lon="+c+"&appid="+apikey
+print(completeURL)
+response =requests.get(completeURL)
+data = response.json() 
+data=dict(data)
+print(data)
+components = data['list'][0]['components']
+print(components)
+st.write("data")
+if st.button("submit"):
+    def extract_component_values(data):
+        print(data)
+        component_values = {}
+        components = data['list'][0]['components']
+        print(components)
+        for key, value in components.items():
+                component_values[key]=value
+        return component_values
+    component_values = extract_component_values(data)
+    st.title("Component Values")
+    for component, values in component_values.items():
+      st.subheader(component)
+      st.write(values)
